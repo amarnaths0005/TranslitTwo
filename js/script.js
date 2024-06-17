@@ -198,7 +198,7 @@
         optionLang.value = "gujarati";
         language = "Gujarati";
         break;
-      case "gurumukhi":
+      case "gurmukhi":
         this.passage =
           " deh sivaa baru mohi eehai subha karmana te kabahU~m na TareM || \n na DaroM ari so jab jaabi laroM nishchai kari apuni jeet karoM || \n aru sikh ho aapne hee man kou iha laalach ha u gun ta u ucharoM || \n jab aav kee a udh nidaan banai ati hee ran mai tab joojh maroM ||";
         optionLang.value = "gurmukhi";
