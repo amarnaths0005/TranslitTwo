@@ -8,6 +8,7 @@
 // Included RRA, LLLa and Pollu characters in Kannada, 3 Feb 2024
 // Updated to fix words like paaraar^^thyam, 14 June 2024
 // Updated the UI based on Sri Srini Amble's suggestions, 17 June 2024
+// Updated Numbering as suggested and coded by Sri Srini Amble, 9 July 2024
 // Bug - still not properly handling anaMt^^naag
 // TODO: To fix issues in Assamese, Bengali and Malayalam caret ^ handling
 
@@ -37,7 +38,7 @@
 
   let language;
   let optionLang;
-  //let numbering;
+  let numbering;
 
   let latinNumbers = new Map();
 
@@ -104,7 +105,7 @@
     passage = "";
 
     sampleGenericPassage =
-      ' namaskAra suprabhAta shubhadina shubharaatri paaraar^thyam paaraar^thyaM paaraarthyaM \n shree kRuShNa gOviMda harE muraarE \n shree raama jayaM   \n pitRUn shreekRuShNakarNaamRutaM123 1 2 3 5.676 980 \n ka kha ga gha ~ga    cha Cha ja Ja ~ja    Ta Tha Da Dha Na    ta tha da dha na Zxa    pa pha ba bha ma \n ya ra rxa la va sha Sha sa ha La Lxa \n rxa rxaa rxi rxee rxu rxoo rxe rxE rxai rxo rxO rxou \n Lxa Lxaa Lxi Lxee Lxu Lxoo Lxe LxE Lxai Lxo LxO Lxou \n maar^kaLxitti~ggaL madinirxainda paarxkaDaluL payattuyinrxa puLLiZxavaay keeNDaanai \n madiniRxainda paaRxkaDaluL payattuyinRxa \n . , ! @ # $ % ^ ( ) < > { } [ ] / " ? | = - _ ` ~ + \n ba! baa@ bi# bee$ bu% boo( \n tatO&rghya tatO&rghyE pitRu pitRUNaaM \n prahRuShTa vadanO rAjA tatO&rghyamupahArayat | \n sa rAj~jaH pratigRuhyArghyaM shaastra dRuShTEna karmaNaa || \n a aa i ee u oo Ru RU lRu e E ai o O ou aM am aH \n ka kaa ki kee ku koo kRu kRU klRu klRU ke kE kai ko kO kou kaM kam kaH \n ma maa mi mee mu moo mRu mRU mlRu mlRU me mE mai mo mO mou maM mam maH \n vikramaarkasiMhaasanakathaa vikramaar^kasiMhaasanakathaa  vikramaarkasim^haasanakathaa vi kramaarkasim^^haasanakathaa \n rAjkumAr rAj^kumAr rAj^^kumAr \n  sAPTwEr sAPT^wEr sAPT^^wEr \n sUrya sUr^ya sUr^^ya';
+      ' namaskAra suprabhAta shubhadina shubharaatri paaraar^thyam paaraar^thyaM paaraarthyaM \n shree kRuShNa gOviMda harE muraarE \n shree raama jayaM   \n pitRUn shreekRuShNakarNaamRutaM123 1 2 3 5.676 980 \n ka kha ga gha ~ga    cha Cha ja Ja ~ja    Ta Tha Da Dha Na    ta tha da dha na Zxa    pa pha ba bha ma \n ya ra rxa la va sha Sha sa ha La Lxa \n rxa rxaa rxi rxee rxu rxoo rxe rxE rxai rxo rxO rxou \n Lxa Lxaa Lxi Lxee Lxu Lxoo Lxe LxE Lxai Lxo LxO Lxou \n maar^kaLxitti~ggaL madinirxainda paarxkaDaluL payattuyinrxa puLLiZxavaay keeNDaanai \n madiniRxainda paaRxkaDaluL payattuyinRxa \n . , ! @ # $ % ^ ( ) < > { } [ ] / " ? | = - _ ` ~ + \n ba! baa@ bi# bee$ bu% boo( \n tatO&rghya tatO&rghyE pitRu pitRUNaaM \n prahRuShTa vadanO rAjA tatO&rghyamupahArayat | \n sa rAj~jaH pratigRuhyArghyaM shaastra dRuShTEna karmaNaa || \n a aa i ee u oo Ru RU lRu e E ai o O ou aM am aH \n ka kaa ki kee ku koo kRu kRU klRu klRU ke kE kai ko kO kou kaM kam kaH \n ma maa mi mee mu moo mRu mRU mlRu mlRU me mE mai mo mO mou maM mam maH \n vikramaarkasiMhaasanakathaa vikramaar^kasiMhaasanakathaa  vikramaarkasim^haasanakathaa vi kramaarkasim^^haasanakathaa \n rAjkumAr rAj^kumAr rAj^^kumAr \n udayakumaar kalyaaN^^kumaar viShNuvardhan raajaashaMkar narasiMharaaju baalakRuShNa shreenaath aMbareeSh vajramuni anaMtanaag shaMkar^^naag dvaarakeesh raajEsh \n paMDareebaayi sarOjaadEvee jayaMtee aaratee bhaaratee kalpanaa maMjuLaa leelaavatee lakShmee padmapriyaa jayamaalaa sumalataa maadhavee jayapradaa \n  sAPTwEr sAPT^wEr sAPT^^wEr \n sUrya sUr^ya sUr^^ya';
 
     //sampleGenericPassage = "r^ga";
 
@@ -132,6 +133,9 @@
 
     bnTrans = document.getElementById("transliterate");
     bnTrans.addEventListener("click", transliteratePassage, false);
+
+    selectNumbering = document.getElementById("numberSel");
+    selectNumbering.addEventListener("change", handleNumbering, false);
 
     optionLang = document.getElementById("inpLang");
     optionLang.addEventListener("change", handleOption, false);
@@ -240,13 +244,25 @@
     handleOption();
   }
 
+  function handleNumbering() {
+    switch (this.value) {
+      case "native":
+        numbering = "native";
+        break;
+      case "latin":
+        numbering = "latin";
+        break;
+    }
+    handleOption();
+  }
+
   function handleOption() {
     if (optionLang.value === "kannada") {
       language = "Kannada";
       vowels = kannadaVowels;
       consonants = kannadaConsonants;
       kaagunita = kannadaKaagunita;
-      numbers = kannadaNumbers;
+      numbers = numbering === "latin" ? latinNumbers : kannadaNumbers;
       anusvaara = kannadaAnusvaara;
       visarga = kannadaVisarga;
       viraama = kannadaViraama;
@@ -257,7 +273,7 @@
       vowels = devanagariVowels;
       consonants = devanagariConsonants;
       kaagunita = devanagariKaagunita;
-      numbers = devanagariNumbers;
+      numbers = numbering === "latin" ? latinNumbers : devanagariNumbersx;
       anusvaara = devanagariAnusvaara;
       visarga = devanagariVisarga;
       viraama = devanagariViraama;
@@ -268,7 +284,7 @@
       vowels = teluguVowels;
       consonants = teluguConsonants;
       kaagunita = teluguKaagunita;
-      numbers = teluguNumbers;
+      numbers = numbering === "latin" ? latinNumbers : teluguNumbers;
       anusvaara = teluguAnusvaara;
       visarga = teluguVisarga;
       viraama = teluguViraama;
@@ -279,7 +295,7 @@
       vowels = bengaliVowels;
       consonants = bengaliConsonants;
       kaagunita = bengaliKaagunita;
-      numbers = bengaliNumbers;
+      numbers = numbering === "latin" ? latinNumbers : bengaliNumbers;
       anusvaara = bengaliAnusvaara;
       visarga = bengaliVisarga;
       viraama = bengaliViraama;
@@ -294,7 +310,7 @@
       vowels = bengaliVowels;
       consonants = bengaliConsonants;
       kaagunita = bengaliKaagunita;
-      numbers = bengaliNumbers;
+      numbers = numbering === "latin" ? latinNumbers : bengaliNumbers;
       anusvaara = bengaliAnusvaara;
       visarga = bengaliVisarga;
       viraama = bengaliViraama;
@@ -311,7 +327,7 @@
       vowels = odiaVowels;
       consonants = odiaConsonants;
       kaagunita = odiaKaagunita;
-      numbers = odiaNumbers;
+      numbers = numbering === "latin" ? latinNumbers : odiaNumbers;
       anusvaara = odiaAnusvaara;
       visarga = odiaVisarga;
       viraama = odiaViraama;
@@ -322,7 +338,7 @@
       vowels = tamilVowels;
       consonants = tamilConsonants;
       kaagunita = tamilKaagunita;
-      numbers = tamilNumbers;
+      numbers = numbering === "latin" ? latinNumbers : tamilNumbers;
       anusvaara = tamilAnusvaara;
       visarga = tamilVisarga;
       viraama = tamilViraama;
@@ -333,7 +349,7 @@
       vowels = gujaratiVowels;
       consonants = gujaratiConsonants;
       kaagunita = gujaratiKaagunita;
-      numbers = gujaratiNumbers;
+      numbers = numbering === "latin" ? latinNumbers : gujaratiNumbers;
       anusvaara = gujaratiAnusvaara;
       visarga = gujaratiVisarga;
       viraama = gujaratiViraama;
@@ -344,7 +360,7 @@
       vowels = gurmukhiVowels;
       consonants = gurmukhiConsonants;
       kaagunita = gurmukhiKaagunita;
-      numbers = gurmukhiNumbers;
+      numbers = numbering === "latin" ? latinNumbers : gurmukhiNumbers;
       anusvaara = gurmukhiAnusvaara;
       visarga = gurmukhiVisarga;
       viraama = gurmukhiViraama;
@@ -355,7 +371,7 @@
       vowels = malayalamVowels;
       consonants = malayalamConsonants;
       kaagunita = malayalamKaagunita;
-      numbers = malayalamNumbers;
+      numbers = numbering === "latin" ? latinNumbers : malayalamNumbers;
       anusvaara = malayalamAnusvaara;
       visarga = malayalamVisarga;
       viraama = malayalamViraama;
@@ -367,6 +383,7 @@
   }
 
   function transliteratePassage() {
+    //handleNumbering();
     inputPassage = document.getElementById("inputEnglish").value;
     outputPassage = "";
     let lines = inputPassage.split("\n");
