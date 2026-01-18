@@ -9,6 +9,7 @@
 // Updated to fix words like paaraar^^thyam, 14 June 2024
 // Updated the UI based on Sri Srini Amble's suggestions, 17 June 2024
 // Updated Numbering as suggested and coded by Sri Srini Amble, 9 July 2024
+// Added Lxa in addition to zha for Tamil La character, 18 Jan 2026
 // Bug - still not properly handling anaMt^^naag
 // TODO: To fix issues in Assamese, Bengali and Malayalam caret ^ handling
 
@@ -76,6 +77,7 @@
   const regex27 =
     /[bcdfghjklmnpqrstvwxyz~&|/:;,.?@!#$%><[(){}=_\'"`+\-\^\]\\]{0,}[aeiou^]{0,}/gi;
   const regex28 = /zh/g;
+  const regex28a = /Lx/g;
   const regex29 = /~M/g;
   const regex30 = /rx/g;
   const regex31 = /~n/g; // For Gurmukhi Addak
@@ -109,6 +111,8 @@
 
     //sampleGenericPassage = "r^ga";
 
+    //sampleGenericPassage = "vizha";
+
     //sampleGenericPassage = "yArghya  r^ga r^^ga sAPT^wEr "; // Bug with sAPT^wEr
 
     //sampleGenericPassage = "r^thya r^thyu r^ku T^wEr pT^wEr TwEr sAPT^wEr sAPT^^wEr"; // "paaraar^thyam";
@@ -116,6 +120,7 @@
     //sampleGenericPassage = "pT^wEr";
 
     language = "Kannada";
+    //language = "Tamil"
     numbering = "latin";
 
     latinNumbers.set("0", "\u0030");
@@ -435,7 +440,7 @@
           transString += transliterateEachPart(
             splitParts[i],
             isFirstPart,
-            isLastPart
+            isLastPart,
           );
         }
       }
@@ -846,6 +851,7 @@
     updatedPart = updatedPart.replace(regex25, "\xda");
     updatedPart = updatedPart.replace(regex26, "\xdb");
     updatedPart = updatedPart.replace(regex28, "z");
+    updatedPart = updatedPart.replace(regex28a, "z");
     updatedPart = updatedPart.replace(regex29, "\xdc");
     updatedPart = updatedPart.replace(regex30, "x");
     updatedPart = updatedPart.replace(regex33, "x");
@@ -859,7 +865,7 @@
         updatedPart,
         isFirstPart,
         isLastPart,
-        result
+        result,
       );
     } else if (updatedPart.length === 2) {
       result += handlePartOfLength2(updatedPart, isFirstPart, result);
